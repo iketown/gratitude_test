@@ -1,14 +1,14 @@
 import { GetServerSideProps } from "next";
 import React from "react";
-import { Button } from "@mui/material";
+import { Button, Container } from "@mui/material";
 
 const SSRTest: React.FC = (props) => {
   return (
-    <div>
+    <Container>
       SSR test
       <pre style={{ fontSize: 12 }}>{JSON.stringify(props, null, 2)}</pre>
       <Button variant="contained">wussup</Button>
-    </div>
+    </Container>
   );
 };
 
