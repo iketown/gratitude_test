@@ -121,7 +121,9 @@ const WeekList = () => {
                               {thisWeek.map((date, i) => {
                                 const date_id = format(date, "yyyy-MM-dd");
                                 const isSelected = date_id === queryDate;
-                                const hasEntry = postRecordsByDate[date_id];
+                                const hasEntry =
+                                  postRecordsByDate &&
+                                  postRecordsByDate[date_id];
                                 const isThisMonth = isSameMonth(
                                   date,
                                   thisMonth
