@@ -31,22 +31,22 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
 
   return (
     <CacheProvider value={emotionCache}>
-      <AuthCtxProvider>
-        {/* <UserCtxProvider> */}
-        {/* <TagCtxProvider> */}
-        {/* <PostCtxProvider> */}
-        <SnackbarProvider>
-          <ThemeProvider theme={lightTheme}>
-            <CssBaseline />
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
-          </ThemeProvider>
-        </SnackbarProvider>
-        {/* </PostCtxProvider> */}
-        {/* </TagCtxProvider> */}
-        {/* </UserCtxProvider> */}
-      </AuthCtxProvider>
+      {/* <AuthCtxProvider> */}
+      {/* <UserCtxProvider> */}
+      {/* <TagCtxProvider> */}
+      {/* <PostCtxProvider> */}
+      <SnackbarProvider>
+        <ThemeProvider theme={lightTheme}>
+          <CssBaseline />
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ThemeProvider>
+      </SnackbarProvider>
+      {/* </PostCtxProvider> */}
+      {/* </TagCtxProvider> */}
+      {/* </UserCtxProvider> */}
+      {/* </AuthCtxProvider> */}
     </CacheProvider>
   );
 };

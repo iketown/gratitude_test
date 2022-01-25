@@ -1,11 +1,9 @@
 import { Button } from "@mui/material";
-import { User } from "firebase/auth";
 import type { GetServerSideProps } from "next";
-import { parseCookies } from "nookies";
 import React from "react";
-
+import { parseCookies } from "nookies";
 interface UserTestI {
-  user?: User;
+  // user?: User;
   error?: any;
   cookies?: any;
   foo: string;
@@ -26,9 +24,9 @@ const GetUserTest: React.FC<UserTestI> = (props) => {
 
 export default GetUserTest;
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const foo = "bar";
-  return {
-    props: { foo },
-  };
-};
+// export const getServerSideProps: GetServerSideProps = async (ctx) => {
+//   const foo = "bar";
+//   return {
+//     props: { foo },
+//   };
+// };
