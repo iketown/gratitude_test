@@ -18,6 +18,7 @@ import PostDisplay from "./PostDisplay";
 
 export const WeekPage: FC = () => {
   const { postRecordsByDate } = usePostCtx();
+
   const { user_id } = useAuthCtx();
   const { goToToday, goToDateId } = useDateNav();
   const { query, push } = useRouter();
@@ -65,10 +66,49 @@ export const WeekPage: FC = () => {
     setEditing(true);
   };
   const handleCreatePost = () => {
+    if (!user_id) return push("/auth/signup");
     setEditing(true);
   };
 
-  // if (typeof window !== "undefined" && !user_id) push("/");
+  const getContent = () => {
+    switch (true) {
+      case editing:
+        return (
+          <Box p={3} width={"100%"}>
+            <CommentInput
+              selectedDate={selectedDate}
+              stopEditing={stopEditing}
+              post={date_id ? posts[date_id] : undefined}
+            />
+          </Box>
+        );
+      case !!selectedDate &&
+        date_id &&
+        posts[date_id] &&
+        !posts[date_id].removed: {
+        return (
+          <PostDisplay
+            post={posts[date_id!]}
+            startEditing={startEditing}
+            selectedDate={selectedDate!}
+          />
+        );
+      }
+      case !!selectedDate: {
+        return (
+          <Button
+            color="secondary"
+            variant="outlined"
+            onClick={handleCreatePost}
+          >
+            Create post for {format(selectedDate!, "MMM d")}{" "}
+          </Button>
+        );
+      }
+      default:
+        return null;
+    }
+  };
 
   return (
     <Container sx={{ p: { xs: 0, md: 2 }, m: 0 }}>
@@ -110,7 +150,7 @@ export const WeekPage: FC = () => {
           justifyContent: "space-around",
         }}
       >
-        {editing ? (
+        {/* {editing ? (
           <Box p={3} width={"100%"}>
             <CommentInput
               selectedDate={selectedDate}
@@ -133,7 +173,8 @@ export const WeekPage: FC = () => {
           >
             Create post for {format(selectedDate, "MMM d")}{" "}
           </Button>
-        ) : null}
+        ) : null} */}
+        {getContent()}
         <Box display="flex" justifyContent={"center"} mt={3}>
           {today_id !== date_id && !editing && (
             <Button

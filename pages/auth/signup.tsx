@@ -162,7 +162,7 @@ export default function SignUp() {
                       )}
                     </Field>
                   </Grid>
-                  <Grid item xs={12}>
+                  {/* <Grid item xs={12}>
                     <Field name="allowExtraEmails">
                       {({ input }) => (
                         <FormControlLabel
@@ -177,7 +177,7 @@ export default function SignUp() {
                         />
                       )}
                     </Field>
-                  </Grid>
+                  </Grid> */}
                 </Grid>
                 <Button
                   type="submit"

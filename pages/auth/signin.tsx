@@ -126,7 +126,7 @@ export default function SignIn() {
                       />
                     )}
                   </Field>
-                  <Field name="remember">
+                  {/* <Field name="remember">
                     {({ input }) => (
                       <FormControlLabel
                         control={
@@ -139,7 +139,7 @@ export default function SignIn() {
                         label="Remember me"
                       />
                     )}
-                  </Field>
+                  </Field> */}
                   <Button
                     type="submit"
                     fullWidth
