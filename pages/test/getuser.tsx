@@ -24,9 +24,9 @@ const GetUserTest: React.FC<UserTestI> = (props) => {
 
 export default GetUserTest;
 
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   const foo = "bar";
-//   return {
-//     props: { foo },
-//   };
-// };
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const foo = "bar";
+  return {
+    props: { foo },
+  };
+};
