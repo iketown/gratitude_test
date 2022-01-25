@@ -4,6 +4,8 @@ import nookies from "nookies";
 
 type Data = {
   name: string;
+  credential: any;
+  cooks: any;
 };
 
 export default function handler(
@@ -11,5 +13,7 @@ export default function handler(
   res: NextApiResponse<Data>
 ) {
   const GAC = process.env.GOOGLE_APPLICATION_CREDENTIALS!;
-  res.status(200).json({ name: "John Doe" });
+  const credential = JSON.parse(Buffer.from(GAC, "base64").toString());
+  const cooks = nookies.get({ req });
+  res.status(200).json({ name: "John Doe", credential, cooks });
 }
