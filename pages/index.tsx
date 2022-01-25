@@ -2,8 +2,16 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import styles from "styles/Home.module.css";
 import { Container, Typography, Grid, Box, Button } from "@mui/material";
+import { useDateNav } from "~/hooks/useDateNav";
+import { useAuthCtx } from "~/contexts/AuthCtx";
 import NextLink from "next/link";
+import { useRouter } from "next/router";
+
 const Home: NextPage = () => {
+  const { goToToday } = useDateNav();
+  const { push } = useRouter();
+  const { user_id } = useAuthCtx();
+  if (!!user_id) push("/profile");
   return (
     <div className={styles.container}>
       <Head>

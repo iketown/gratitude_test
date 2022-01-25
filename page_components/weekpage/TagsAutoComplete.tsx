@@ -1,23 +1,13 @@
-import {
-  ListItem,
-  TextField,
-  ListItemIcon,
-  Icon,
-  Box,
-  ListItemButton,
-} from "@mui/material";
+import { Box, ListItem, ListItemButton, TextField } from "@mui/material";
 import Autocomplete, { createFilterOptions } from "@mui/material/Autocomplete";
-import React, { useState, useEffect } from "react";
-import type { Dispatch, SetStateAction, FC } from "react";
-import { useUserCtx } from "~/contexts/UserCtx";
-import { defaultTagObj } from "~/utils/tagIcons";
-import { Face } from "@mui/icons-material";
-import { getTagIcon } from "~/page_components/tagspage/tagsPageHelpers";
-import TagIconDialog from "~/page_components/tagspage/TagIconDialog";
-import { nanoid } from "nanoid";
-import { useTagFxns } from "~/hooks/useTagFxns";
-import { useTagCtx } from "~/contexts/TagCtx";
 import { format } from "date-fns";
+import { nanoid } from "nanoid";
+import type { Dispatch, FC, SetStateAction } from "react";
+import React, { useEffect, useState, memo } from "react";
+import { useTagCtx } from "~/contexts/TagCtx";
+import { useTagFxns } from "~/hooks/useTagFxns";
+import TagIconDialog from "~/page_components/tagspage/TagIconDialog";
+import { getTagIcon } from "~/page_components/tagspage/tagsPageHelpers";
 
 interface TagsAutoCompleteI {
   selectedTags: Tag[];
@@ -84,6 +74,7 @@ const TagsAutoComplete: FC<TagsAutoCompleteI> = ({
           backgroundColor: (theme) => theme.palette.background.paper,
           mt: 2,
         }}
+        isOptionEqualToValue={(opt, val) => opt.tagTitle === val.tagTitle}
         selectOnFocus
         clearOnBlur
         handleHomeEndKeys
@@ -167,4 +158,4 @@ const TagsAutoComplete: FC<TagsAutoCompleteI> = ({
   );
 };
 
-export default TagsAutoComplete;
+export default memo(TagsAutoComplete);

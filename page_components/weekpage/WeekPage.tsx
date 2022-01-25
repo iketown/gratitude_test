@@ -1,38 +1,26 @@
-import { Box, Button, Container, Grid, Typography } from "@mui/material";
+import { Box, Button, Container, Grid } from "@mui/material";
 import { grey } from "@mui/material/colors";
 import { format } from "date-fns";
-import type { DecodedIdToken } from "firebase-admin/lib/auth/token-verifier";
+import { doc, onSnapshot } from "firebase/firestore";
 import { useRouter } from "next/router";
 import type { FC } from "react";
 import React, { useEffect, useState } from "react";
 import { FaSun } from "react-icons/fa";
+import { useAuthCtx } from "~/contexts/AuthCtx";
 import { usePostCtx } from "~/contexts/PostCtx";
 import { useTagCtx } from "~/contexts/TagCtx";
 import { useDateNav } from "~/hooks/useDateNav";
+import { getDates } from "~/utils/dateHelpers";
+import { db } from "~/utils/firebase";
 import CommentInput from "./CommentInput";
 import DateCard from "./DateCard";
 import PostDisplay from "./PostDisplay";
-import axios from "axios";
-import { getDates } from "~/utils/dateHelpers";
-import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "~/utils/firebase";
-import { useAuthCtx } from "~/contexts/AuthCtx";
 
-interface WeekNumPageI {
-  user: DecodedIdToken;
-  posts: { [date_id: string]: Post };
-  startDate: string;
-  endDate: string;
-  dates: string[];
-  myTagSet?: TagDoc;
-  error?: any;
-}
-
-export const WeekPage: FC<WeekNumPageI> = ({}) => {
+export const WeekPage: FC = () => {
   const { postRecordsByDate } = usePostCtx();
   const { user_id } = useAuthCtx();
   const { goToToday, goToDateId } = useDateNav();
-  const { query } = useRouter();
+  const { query, push } = useRouter();
   const { setMyTags, setTagIds } = useTagCtx();
   const [posts, setPosts] = useState<{ [date_id: string]: Post }>({});
   const [editing, setEditing] = useState(false);
@@ -79,6 +67,9 @@ export const WeekPage: FC<WeekNumPageI> = ({}) => {
   const handleCreatePost = () => {
     setEditing(true);
   };
+
+  // if (typeof window !== "undefined" && !user_id) push("/");
+
   return (
     <Container sx={{ p: { xs: 0, md: 2 }, m: 0 }}>
       <Grid

@@ -14,36 +14,28 @@ import NextLink from "next/link";
 import { useEffect } from "react";
 import { Field, Form } from "react-final-form";
 import Copyright from "~/components/Copyright";
-// import { useAuthCtx } from "~/contexts/AuthCtx";
-// import { useDateNav } from "~/hooks/useDateNav";
-import nookies from "nookies";
+import { useAuthCtx } from "~/contexts/AuthCtx";
+import { useDateNav } from "~/hooks/useDateNav";
 import { useToast } from "~/hooks/useToast";
-import {
-  signInWithEmailAndPassword,
-  getAuth,
-  onIdTokenChanged,
-} from "firebase/auth";
+
 interface FormValues {
   email: string;
   password: string;
 }
 
 export default function SignIn() {
-  // const { loginEmailPassword } = useAuthCtx();
+  const { loginEmailPassword } = useAuthCtx();
   const { toast } = useToast();
-  // const { goToToday } = useDateNav();
+  const { goToToday } = useDateNav();
 
   const onSubmit = async (values: FormValues) => {
     const { email, password } = values;
     try {
-      // const { user } = await loginEmailPassword(email, password);
-      const { user } = await signInWithEmailAndPassword(
-        getAuth(),
-        email,
-        password
-      );
+      const { user } = await loginEmailPassword(email, password);
+
       console.log("signed in", user);
       toast(`${user.email} signed in`, "success");
+      setTimeout(goToToday, 100);
     } catch (error) {
       //@ts-ignore
       switch (error?.code) {
@@ -69,9 +61,6 @@ export default function SignIn() {
   };
   return (
     <div>
-      <NextLink href="/test/getuser">
-        <Button variant="outlined">get user</Button>
-      </NextLink>
       <Form onSubmit={onSubmit}>
         {({ handleSubmit }) => {
           return (
