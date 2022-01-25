@@ -32,21 +32,7 @@ export default function SignIn() {
   // const { loginEmailPassword } = useAuthCtx();
   const { toast } = useToast();
   // const { goToToday } = useDateNav();
-  useEffect(() => {
-    return onIdTokenChanged(getAuth(), async (user) => {
-      console.log("id token changed", new Date().toTimeString(), user);
-      if (!user) {
-        // setUser(null);
-        // setSignedOut(true);
-        nookies.set(undefined, "token", "", { path: "/" });
-      } else {
-        const token = await user.getIdToken(true);
-        // setUser(user);
-        // setSignedOut(false);
-        nookies.set(undefined, "token", token, { path: "/" });
-      }
-    });
-  }, []);
+
   const onSubmit = async (values: FormValues) => {
     const { email, password } = values;
     try {
@@ -58,9 +44,6 @@ export default function SignIn() {
       );
       console.log("signed in", user);
       toast(`${user.email} signed in`, "success");
-      // setTimeout(() => {
-      //   goToToday();
-      // }, 500);
     } catch (error) {
       //@ts-ignore
       switch (error?.code) {
@@ -205,27 +188,3 @@ export default function SignIn() {
     </div>
   );
 }
-
-// export const getServerSideProps: GetServerSideProps = async (ctx) => {
-//   try {
-//     const { token } = nookies.get(ctx);
-//     if (!token) return { props: { foo: "no token beeotch" } };
-//     const user = await adminAuth.verifyIdToken(token);
-//     const today = new Date();
-//     const week = getWeek(today);
-//     const year = getYear(today);
-//     const date_id = format(today, "yyyy-MM-dd");
-//     return {
-//       redirect: {
-//         //todo set this to this week
-//         destination: `/weeks/${year}/${week}?date=${date_id}`,
-//         permanent: false,
-//       },
-//     };
-//   } catch (error) {
-//     console.log("error authing person", error);
-//     return {
-//       props: { foo: "bar" },
-//     };
-//   }
-// };

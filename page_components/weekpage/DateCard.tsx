@@ -14,15 +14,14 @@ import { format, isAfter, endOfDay, isSameDay } from "date-fns";
 
 interface DateCardI {
   date_id: string;
-  post?: Post;
+  hasPost?: boolean;
   handleClick: () => void;
 }
-const DateCard: React.FC<DateCardI> = ({ date_id, post, handleClick }) => {
+const DateCard: React.FC<DateCardI> = ({ date_id, hasPost, handleClick }) => {
   const today = endOfDay(new Date());
   const date = new Date(`${date_id}T00:00`);
   const inFuture = isAfter(date, today);
   const isToday = isSameDay(date, today);
-  const hasPost = !!post && !post.removed;
   return (
     <Card
       variant="elevation"

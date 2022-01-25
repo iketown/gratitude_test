@@ -1,24 +1,23 @@
 import {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
-import { db } from "~/utils/firebase";
-import {
-  onSnapshot,
   collection,
+  deleteField,
+  doc,
+  onSnapshot,
   query,
   setDoc,
-  doc,
-  where,
-  deleteDoc,
-  deleteField,
   updateDoc,
 } from "firebase/firestore";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
+import { db } from "~/utils/firebase";
 import { useAuthCtx } from "./AuthCtx";
 import { useTagCtx } from "./TagCtx";
+import { getDates } from "~/utils/dateHelpers";
 
 interface PostCtxI {
   postRecordsByDate: PostRecordsByDate;
@@ -27,7 +26,6 @@ interface PostCtxI {
     tagsToAdd: string[],
     tagsToRemove: string[]
   ) => Promise<void>;
-  recentUpdates: { [date_id: string]: Post };
   removePost: (post_id: string, tagsToRemove: string[]) => Promise<any>;
 }
 
@@ -51,17 +49,15 @@ interface UpdatePostI {
 const PostCtx = createContext<PostCtxI>({});
 
 export const PostCtxProvider: React.FC = ({ children }) => {
-  const { user, user_id } = useAuthCtx();
+  const { user_id } = useAuthCtx();
   const { updateTagRecords } = useTagCtx();
+
   const [postRecordsYears, setPostRecordsYears] = useState<PostRecordsByYear>(
     {}
   );
   const [postRecordsByDate, setPostRecordsByDate] = useState<PostRecordsByDate>(
     {}
   );
-  const [recentUpdates, setRecentUpdates] = useState<{
-    [date_id: string]: Post;
-  }>({});
 
   const updatePost = useCallback(
     async (post: UpdatePostI, tagsToAdd: string[], tagsToRemove: string[]) => {
@@ -142,28 +138,8 @@ export const PostCtxProvider: React.FC = ({ children }) => {
     return unsub;
   }, [user_id]);
 
-  useEffect(() => {
-    if (!user_id) return;
-    const startTime = new Date().valueOf();
-    const q = query(
-      collection(db, "users", user_id, "posts"),
-      where("updated_at", ">", startTime)
-    );
-    const unsub = onSnapshot(q, (snap) => {
-      if (snap.empty) return;
-      const _recentUpdates: { [date_id: string]: Post } = {};
-      snap.docChanges().forEach(({ doc }) => {
-        _recentUpdates[doc.id] = doc.data() as Post;
-      });
-      setRecentUpdates((old) => ({ ...old, ..._recentUpdates }));
-    });
-    return unsub;
-  }, [user_id]);
-
   return (
-    <PostCtx.Provider
-      value={{ postRecordsByDate, updatePost, removePost, recentUpdates }}
-    >
+    <PostCtx.Provider value={{ postRecordsByDate, updatePost, removePost }}>
       {children}
     </PostCtx.Provider>
   );

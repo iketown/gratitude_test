@@ -1,5 +1,4 @@
 import { Button } from "@mui/material";
-import type { GetServerSideProps } from "next";
 import React from "react";
 import { parseCookies } from "nookies";
 interface UserTestI {
@@ -23,10 +22,3 @@ const GetUserTest: React.FC<UserTestI> = (props) => {
 };
 
 export default GetUserTest;
-
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const foo = "bar";
-  return {
-    props: { foo },
-  };
-};

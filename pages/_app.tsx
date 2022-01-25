@@ -3,8 +3,8 @@ import type { AppProps } from "next/app";
 import { CacheProvider, EmotionCache } from "@emotion/react";
 import { ThemeProvider, CssBaseline, createTheme } from "@mui/material";
 import { AuthCtxProvider } from "~/contexts/AuthCtx";
-// import { UserCtxProvider } from "~/contexts/UserCtx";
-// import { PostCtxProvider } from "~/contexts/PostCtx";
+import { UserCtxProvider } from "~/contexts/UserCtx";
+import { PostCtxProvider } from "~/contexts/PostCtx";
 import { SnackbarProvider } from "notistack";
 
 import "@fontsource/roboto/300.css";
@@ -31,22 +31,22 @@ const MyApp: React.FunctionComponent<MyAppProps> = (props) => {
 
   return (
     <CacheProvider value={emotionCache}>
-      {/* <AuthCtxProvider> */}
-      {/* <UserCtxProvider> */}
-      {/* <TagCtxProvider> */}
-      {/* <PostCtxProvider> */}
-      <SnackbarProvider>
-        <ThemeProvider theme={lightTheme}>
-          <CssBaseline />
-          <Layout>
-            <Component {...pageProps} />
-          </Layout>
-        </ThemeProvider>
-      </SnackbarProvider>
-      {/* </PostCtxProvider> */}
-      {/* </TagCtxProvider> */}
-      {/* </UserCtxProvider> */}
-      {/* </AuthCtxProvider> */}
+      <AuthCtxProvider>
+        <UserCtxProvider>
+          <TagCtxProvider>
+            <PostCtxProvider>
+              <SnackbarProvider>
+                <ThemeProvider theme={lightTheme}>
+                  <CssBaseline />
+                  <Layout>
+                    <Component {...pageProps} />
+                  </Layout>
+                </ThemeProvider>
+              </SnackbarProvider>
+            </PostCtxProvider>
+          </TagCtxProvider>
+        </UserCtxProvider>
+      </AuthCtxProvider>
     </CacheProvider>
   );
 };

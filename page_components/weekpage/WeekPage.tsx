@@ -13,6 +13,11 @@ import CommentInput from "./CommentInput";
 import DateCard from "./DateCard";
 import PostDisplay from "./PostDisplay";
 import axios from "axios";
+import { getDates } from "~/utils/dateHelpers";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "~/utils/firebase";
+import { useAuthCtx } from "~/contexts/AuthCtx";
+
 interface WeekNumPageI {
   user: DecodedIdToken;
   posts: { [date_id: string]: Post };
@@ -23,37 +28,39 @@ interface WeekNumPageI {
   error?: any;
 }
 
-export const WeekPage: FC<WeekNumPageI> = ({
-  user,
-  posts,
-  startDate,
-  endDate,
-  dates,
-  myTagSet,
-  error,
-}) => {
-  const { postRecordsByDate, recentUpdates } = usePostCtx();
+export const WeekPage: FC<WeekNumPageI> = ({}) => {
+  const { postRecordsByDate } = usePostCtx();
+  const { user_id } = useAuthCtx();
   const { goToToday, goToDateId } = useDateNav();
   const { query } = useRouter();
   const { setMyTags, setTagIds } = useTagCtx();
+  const [posts, setPosts] = useState<{ [date_id: string]: Post }>({});
   const [editing, setEditing] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   //
   //
-  if (error) return <pre>{JSON.stringify(error, null, 2)}</pre>;
   //
   //
-  const allPosts = { ...posts, ...recentUpdates };
   const date_id = selectedDate && format(selectedDate, "yyyy-MM-dd");
   const today_id = format(new Date(), "yyyy-MM-dd");
+  const year = query.year as string;
+  const week = query.week as string;
+
+  const { dates } = getDates({ year, week });
 
   useEffect(() => {
-    if (!myTagSet) {
-      return;
-    }
-    setMyTags(myTagSet.tags || {});
-    setTagIds(myTagSet.tag_ids || []);
-  }, [myTagSet]);
+    if (!user_id || !date_id) return;
+
+    const unsub = onSnapshot(
+      doc(db, "users", user_id, "posts", date_id),
+      (doc) => {
+        const date_id = doc.id;
+        const post = doc.data() as Post;
+        setPosts((old) => ({ ...old, [date_id]: post }));
+      }
+    );
+    return unsub;
+  }, [date_id, user_id]);
 
   useEffect(() => {
     if (query.date) {
@@ -81,13 +88,15 @@ export const WeekPage: FC<WeekNumPageI> = ({
         sx={{ justifyContent: "center", p: { xs: 1 } }}
       >
         {dates?.map((date_id) => {
-          const post = allPosts[date_id];
+          const hasPost =
+            !!postRecordsByDate[date_id] &&
+            postRecordsByDate[date_id] !== "removed";
           return (
             <Grid item key={date_id}>
               <DateCard
                 key={date_id}
                 date_id={date_id}
-                post={post}
+                hasPost={hasPost}
                 handleClick={() => {
                   setSelectedDate(new Date(`${date_id}T00:00`));
                   goToDateId(date_id);
@@ -115,12 +124,12 @@ export const WeekPage: FC<WeekNumPageI> = ({
             <CommentInput
               selectedDate={selectedDate}
               stopEditing={stopEditing}
-              post={date_id ? allPosts[date_id] : undefined}
+              post={date_id ? posts[date_id] : undefined}
             />
           </Box>
-        ) : date_id && allPosts[date_id] && !allPosts[date_id].removed ? (
+        ) : date_id && posts[date_id] && !posts[date_id].removed ? (
           <PostDisplay
-            post={allPosts[date_id]}
+            post={posts[date_id]}
             startEditing={startEditing}
             selectedDate={selectedDate}
           />
